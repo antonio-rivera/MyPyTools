@@ -1,22 +1,29 @@
 from utils import security
+import pytest
 
 
 class TestSecurity:
-    def test_valid_password(self):
-        p1 = "Pa$$word"  # Every condition except number
-        p2 = "1@Pa"  # Every condition except length
-        p3 = "ma&vimip1"  # Every condition except uppercase
-        p4 = "ASDASD3#"  # Every condition except lowercase
-        p5 = "Myname123456"  # Every condition except special
+    @pytest.mark.parametrize("password, expected", [
+        ("Pa$$word", False),
+        ("1@Pa", False),
+        ("ma&vimip1", False),
+        ("ASDASD3#", False),
+        ("Myname123456", False),
+        (";lm4<KMb", True),
+        ("mZ^D88]6", True),
+        ("Xzi_Y\"=0", True)
+    ])
+    def test_valid_password(self, password, expected):
+        assert security.valid_password(password) == expected
 
-        p6 = ";lm4<KMb"
-        p7 = "mZ^D88]6"
-        p8 = "Xzi_Y\"=0"
-
-        passwords_fail = [p1, p2, p3, p4, p5]
-        passwords_pass = [p6, p7, p8]
-        for p in passwords_fail:
-            assert security.valid_password(p) == False
-
-        for p in passwords_pass:
-            assert security.valid_password(p) == True
+    @pytest.mark.parametrize("text_input, result", [
+        ("\" or \"\"=\"", " or "),
+        ("; DROP global.users",
+         " DROP globalusers"),
+        ("; cat /etc/passwd",
+         " cat etcpasswd"),
+        ("<script location=\"http://attack.com\"> <script/>",
+         "script locationhttpattackcom script")
+    ])
+    def test_sanitize_input(self, text_input, result):
+        assert security.sanitize_input(text_input) == result
