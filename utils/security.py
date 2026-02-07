@@ -21,3 +21,8 @@ def valid_password(password: str, minimum=8) -> bool:
             return False
 
     return p_length >= minimum
+
+
+def sanitize_input(string: str) -> str:
+    pattern = r"[\'\"<>\\\/\.\,\;\:\{\}\[\]\(\)=]"
+    return re.sub(pattern, '', string)
