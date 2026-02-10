@@ -27,3 +27,11 @@ class TestSecurity:
     ])
     def test_sanitize_input(self, text_input, result):
         assert security.sanitize_input(text_input) == result
+
+    @pytest.mark.parametrize("string, maxLen, expected", [
+        ("14t34tr13t4134r14t134t134t", len("14t34tr13t4134r314t134t134t"), False),
+        ("r"*400, 401, False),
+        ("`"*20, 19, True)
+    ])
+    def test_string_is_too_large(self, string, maxLen, expected):
+        assert security.string_is_too_large(string, maxLen) == expected

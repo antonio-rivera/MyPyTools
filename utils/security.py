@@ -26,3 +26,10 @@ def valid_password(password: str, minimum=8) -> bool:
 def sanitize_input(string: str) -> str:
     pattern = r"[\'\"<>\\\/\.\,\;\:\{\}\[\]\(\)=]"
     return re.sub(pattern, '', string)
+
+
+def string_is_too_large(string: str, maxLength: int) -> bool:
+    if len(string) > maxLength:
+        return True
+    else:
+        return False
